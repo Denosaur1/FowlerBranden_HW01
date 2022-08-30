@@ -5,10 +5,24 @@ using UnityEngine;
 public class TankController : MonoBehaviour
 {
     [SerializeField] float _maxSpeed = .25f;
+    [SerializeField] float _curSpeed = .25f;
     [SerializeField] float _turnSpeed = 2f;
+    public float timer = 0;
 
+    public float MaxSpeed
+    {
+        get => _maxSpeed; 
+        set => _maxSpeed = value; 
+    } public float CurSpeed
+    {
+        get => _curSpeed; 
+        set => _curSpeed = value; 
+    }
     Rigidbody _rb = null;
-
+    private void Start()
+    {
+        _curSpeed = _maxSpeed;
+    }
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -16,6 +30,8 @@ public class TankController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(timer > 0) { timer--; }
+        else { _curSpeed = _maxSpeed; }
         MoveTank();
         TurnTank();
     }
@@ -23,7 +39,7 @@ public class TankController : MonoBehaviour
     public void MoveTank()
     {
         // calculate the move amount
-        float moveAmountThisFrame = Input.GetAxis("Vertical") * _maxSpeed;
+        float moveAmountThisFrame = Input.GetAxis("Vertical") * _curSpeed;
         // create a vector from amount and direction
         Vector3 moveOffset = transform.forward * moveAmountThisFrame;
         // apply vector to the rigidbody
